@@ -261,6 +261,10 @@ fun NoteEditorScreen(
             }
         )
     } else {
+        androidx.activity.compose.BackHandler {
+            saveCurrentState()
+            onBack()
+        }
         Scaffold(
             topBar = {
                 TopAppBar(
