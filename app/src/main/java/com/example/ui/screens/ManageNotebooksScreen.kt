@@ -30,6 +30,7 @@ fun ManageNotebooksScreen(
     viewModel: NotesViewModel,
     onBack: () -> Unit
 ) {
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     val notebooks by viewModel.allNotebooks.collectAsState()
     val allNotes by viewModel.rawNotes.collectAsState()
 
@@ -45,10 +46,21 @@ fun ManageNotebooksScreen(
         "#E91E63", "#FF9800", "#9C27B0", "#009688", "#3F51B5"
     )
 
+    val glassBorder = androidx.compose.foundation.BorderStroke(
+        width = 1.dp,
+        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+            colors = listOf(
+                Color.White.copy(alpha = 0.55f),
+                Color.White.copy(alpha = 0.2f),
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+            )
+        )
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Manage Notebooks") },
+                title = { Text("Manage Notebooks & Folders") },
                 navigationIcon = {
                     IconButton(
                         onClick = onBack,
@@ -59,7 +71,10 @@ fun ManageNotebooksScreen(
                 },
                 actions = {
                     IconButton(
-                        onClick = { showCreateDialog = true },
+                        onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                            showCreateDialog = true
+                        },
                         modifier = Modifier.testTag("add_notebook_header_button")
                     ) {
                         Icon(Icons.Default.Add, contentDescription = "Add Notebook")
@@ -69,7 +84,10 @@ fun ManageNotebooksScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { showCreateDialog = true },
+                onClick = {
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                    showCreateDialog = true
+                },
                 icon = { Icon(Icons.Default.Add, contentDescription = null) },
                 text = { Text("New Notebook") },
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -84,14 +102,15 @@ fun ManageNotebooksScreen(
                 .padding(horizontal = 16.dp)
         ) {
             Surface(
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f),
+                shape = RoundedCornerShape(16.dp),
+                border = glassBorder,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
                 Row(
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -100,7 +119,7 @@ fun ManageNotebooksScreen(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(20.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Reorder, rename, or delete notebooks. Deleting a notebook allows you to safely relocate its notes.",
                         style = MaterialTheme.typography.bodySmall,
@@ -139,7 +158,8 @@ fun ManageNotebooksScreen(
                                 .fillMaxWidth()
                                 .testTag("notebook_item_${notebook.id}"),
                             shape = RoundedCornerShape(16.dp),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                            border = glassBorder,
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.4f)),
                             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
                         ) {
                             Row(
