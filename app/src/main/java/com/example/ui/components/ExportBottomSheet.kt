@@ -340,7 +340,7 @@ private fun exportToUri(
     context: Context,
     uri: Uri,
     notes: List<Note>,
-    isPdf: Boolean,
+    exportFormat: String,
     includeHeader: Boolean,
     includeMetadata: Boolean
 ): Boolean {
@@ -348,16 +348,52 @@ private fun exportToUri(
         val outputStream: OutputStream? = context.contentResolver.openOutputStream(uri)
         if (outputStream == null) return false
 
-        if (isPdf) {
-            writePdfToStream(outputStream, notes, includeHeader, includeMetadata)
-        } else {
-            writeTxtToStream(outputStream, notes, includeHeader, includeMetadata)
+        when (exportFormat) {
+            "PDF" -> writePdfToStream(outputStream, notes, includeHeader, includeMetadata)
+            "JSON" -> writeJsonToStream(outputStream, notes)
+            else -> writeTxtToStream(outputStream, notes, includeHeader, includeMetadata)
         }
         true
     } catch (e: Exception) {
         e.printStackTrace()
         false
     }
+}
+
+private fun writeJsonToStream(
+    outputStream: OutputStream,
+    notes: List<Note>
+) {
+    val jsonArray = org.json.JSONArray()
+    notes.forEach { note ->
+        val obj = org.json.JSONObject().apply {
+            put("id", note.id)
+            put("title", note.title)
+            put("content", note.content)
+            put("type", note.type.name)
+            put("notebookName", note.notebookName)
+            put("tagsCsv", note.tagsCsv)
+            put("colorHex", note.colorHex)
+            put("checklistJson", note.checklistJson)
+            put("attachmentsJson", note.attachmentsJson)
+            put("isPinned", note.isPinned)
+            put("isFavorite", note.isFavorite)
+            put("isPrivate", note.isPrivate)
+            put("createdTimestamp", note.createdTimestamp)
+            put("updatedTimestamp", note.updatedTimestamp)
+        }
+        jsonArray.put(obj)
+    }
+
+    val finalJson = if (notes.size == 1) {
+        jsonArray.getJSONObject(0).toString(2)
+    } else {
+        jsonArray.toString(2)
+    }
+
+    outputStream.write(finalJson.toByteArray(Charsets.UTF_8))
+    outputStream.flush()
+    outputStream.close()
 }
 
 private fun writeTxtToStream(
