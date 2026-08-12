@@ -42,6 +42,10 @@ fun AllNotesScreen(
 
     var showCreateFabMenu by remember { mutableStateOf(false) }
 
+    androidx.activity.compose.BackHandler(enabled = filterState.searchQuery.isNotEmpty()) {
+        viewModel.updateSearchQuery("")
+    }
+
     Scaffold(
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {

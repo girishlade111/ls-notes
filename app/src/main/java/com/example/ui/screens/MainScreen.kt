@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -37,6 +38,34 @@ fun MainScreen(
 
     var selectedNoteForInfo by remember { mutableStateOf<Note?>(null) }
     var selectedNoteForExport by remember { mutableStateOf<Note?>(null) }
+
+    // Android System Back Gesture handlers
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
+
+    BackHandler(enabled = selectedNoteForInfo != null) {
+        selectedNoteForInfo = null
+    }
+
+    BackHandler(enabled = selectedNoteForExport != null) {
+        selectedNoteForExport = null
+    }
+
+    BackHandler(enabled = activeNoteIdForHistory != null) {
+        activeNoteIdForHistory = null
+    }
+
+    BackHandler(
+        enabled = drawerState.isClosed &&
+                activeNoteIdForEdit == null &&
+                activeNoteIdForHistory == null &&
+                selectedNoteForInfo == null &&
+                selectedNoteForExport == null &&
+                currentSection != NavSection.ALL_NOTES
+    ) {
+        viewModel.selectSection(NavSection.ALL_NOTES)
+    }
 
     // User Toast messages
     val snackbarHostState = remember { SnackbarHostState() }
