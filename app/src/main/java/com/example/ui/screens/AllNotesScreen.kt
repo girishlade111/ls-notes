@@ -42,6 +42,7 @@ fun AllNotesScreen(
 
     val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     var showCreateFabMenu by remember { mutableStateOf(false) }
+    var showStatsDialog by remember { mutableStateOf(false) }
 
     androidx.activity.compose.BackHandler(enabled = filterState.searchQuery.isNotEmpty()) {
         viewModel.updateSearchQuery("")
@@ -69,6 +70,9 @@ fun AllNotesScreen(
                     },
                     trailingIcon = {
                         Row {
+                            IconButton(onClick = { showStatsDialog = true }) {
+                                Icon(Icons.Default.Analytics, contentDescription = "Note Statistics", tint = MaterialTheme.colorScheme.primary)
+                            }
                             IconButton(onClick = { viewModel.toggleViewMode() }) {
                                 Icon(
                                     imageVector = if (filterState.viewMode == NoteViewMode.GRID) Icons.Default.ViewList else Icons.Default.GridView,
