@@ -42,6 +42,12 @@ class QuickActionWidgetProvider : AppWidgetProvider() {
                 createQuickPendingIntent(context, "CHECKLIST", 102)
             )
 
+            // Photo Note Shortcut
+            views.setOnClickPendingIntent(
+                R.id.btn_quick_photo,
+                createQuickPendingIntent(context, "PHOTO", 106)
+            )
+
             // Voice Note Shortcut
             views.setOnClickPendingIntent(
                 R.id.btn_quick_voice,
