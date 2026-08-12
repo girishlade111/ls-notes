@@ -17,6 +17,7 @@ class LsNotesRepository(
 ) {
     private val database: LsNotesDatabase by lazy { LsNotesDatabase.getInstance(context) }
     val noteImportService: NoteImportService by lazy { NoteImportService(context, this) }
+    val importManager: ImportManager by lazy { ImportManager(context, this) }
 
     suspend fun <T> runInTransaction(block: suspend () -> T): T {
         return database.withTransaction(block)
