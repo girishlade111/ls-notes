@@ -41,6 +41,7 @@ fun NoteHistoryScreen(
     onBack: () -> Unit,
     onVersionRestored: (Note) -> Unit = {}
 ) {
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     val historyList by viewModel.getHistoryForNote(noteId).collectAsState(initial = emptyList())
     
     var currentNoteState by remember { mutableStateOf<Note?>(null) }
@@ -48,6 +49,17 @@ fun NoteHistoryScreen(
     var expandedHistoryId by remember { mutableStateOf<Long?>(null) }
 
     val dateFormatter = remember { SimpleDateFormat("MMM dd, yyyy 'at' hh:mm:ss a", Locale.getDefault()) }
+
+    val glassBorder = androidx.compose.foundation.BorderStroke(
+        width = 1.dp,
+        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+            colors = listOf(
+                Color.White.copy(alpha = 0.55f),
+                Color.White.copy(alpha = 0.2f),
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+            )
+        )
+    )
 
     // Load current note metadata
     LaunchedEffect(noteId) {
@@ -62,7 +74,7 @@ fun NoteHistoryScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Note History",
+                            text = "Note History Timeline",
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge
                         )
@@ -89,6 +101,7 @@ fun NoteHistoryScreen(
                     currentNoteState?.let { note ->
                         IconButton(
                             onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
                                 viewModel.saveManualHistorySnapshot(note, "Manual Snapshot")
                             }
                         ) {
@@ -118,11 +131,8 @@ fun NoteHistoryScreen(
                     .fillMaxWidth()
                     .padding(vertical = 12.dp),
                 shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.25f),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp,
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
-                )
+                color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f),
+                border = glassBorder
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
