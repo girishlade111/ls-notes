@@ -296,4 +296,13 @@ fun AllNotesScreen(
             }
         }
     }
+
+    if (showStatsDialog) {
+        com.example.ui.components.NoteStatisticsDialog(
+            notes = notes,
+            notebooks = notebooks,
+            tags = tags,
+            onDismiss = { showStatsDialog = false }
+        )
+    }
 }
