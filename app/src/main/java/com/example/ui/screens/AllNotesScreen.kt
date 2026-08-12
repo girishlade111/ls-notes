@@ -120,14 +120,14 @@ fun AllNotesScreen(
                     // Tag Selector Chip
                     if (tags.isNotEmpty()) {
                         FilterChip(
-                            selected = filterState.selectedTagId != null,
+                            selected = filterState.selectedTag != null,
                             onClick = { viewModel.setTagFilter(null) },
                             label = {
-                                val activeTag = tags.find { it.id == filterState.selectedTagId }?.name ?: "All Tags"
+                                val activeTag = filterState.selectedTag?.let { "#$it" } ?: "All Tags"
                                 Text(activeTag)
                             },
                             trailingIcon = {
-                                if (filterState.selectedTagId != null) {
+                                if (filterState.selectedTag != null) {
                                     Icon(Icons.Default.Close, contentDescription = "Clear Tag Filter", modifier = Modifier.size(16.dp))
                                 }
                             }
