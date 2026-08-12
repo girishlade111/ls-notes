@@ -92,6 +92,7 @@ fun MainScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxHeight()
+                            .statusBarsPadding()
                             .padding(16.dp)
                     ) {
                         // Header
