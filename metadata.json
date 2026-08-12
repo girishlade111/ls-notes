@@ -1,0 +1,6 @@
+{
+  "name": "LS Notes",
+  "description": "LS Notes - Premium, artistic, offline-first local note-taking application",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">LS Notes</string>
+    <string name="widget_pinned_notes_name">LS Notes - Pinned Notes</string>
+    <string name="widget_pinned_notes_desc">View pinned notes and quick create new notes from home screen.</string>
+    <string name="widget_quick_action_name">LS Notes - Quick Actions</string>
+    <string name="widget_quick_action_desc">Instant action shortcuts to create text, checklist, voice or drawing notes.</string>
+</resources>
