@@ -1,9 +1,12 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Lock
@@ -14,10 +17,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.FragmentActivity
 import com.example.ui.components.NoteCard
@@ -44,6 +49,17 @@ fun PrivateSafeScreen(
     var isSetPasscodeMode by remember { mutableStateOf(false) }
 
     val canUseBiometrics = remember(context) { BiometricAuthManager.canAuthenticate(context) }
+
+    val glassBorder = BorderStroke(
+        width = 1.dp,
+        brush = Brush.linearGradient(
+            colors = listOf(
+                Color.White.copy(alpha = 0.5f),
+                Color.White.copy(alpha = 0.15f),
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
+            )
+        )
+    )
 
     fun triggerBiometricUnlock() {
         if (fragmentActivity != null && canUseBiometrics) {
@@ -101,93 +117,132 @@ fun PrivateSafeScreen(
             contentAlignment = Alignment.Center
         ) {
             if (!isUnlocked) {
-                // Locked View
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
+                // Glassmorphism Locked View Container
+                Surface(
+                    modifier = Modifier.fillMaxWidth(0.92f),
+                    shape = RoundedCornerShape(28.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.55f),
+                    border = glassBorder,
+                    shadowElevation = 12.dp,
+                    tonalElevation = 6.dp
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Security,
-                        contentDescription = null,
-                        modifier = Modifier.size(80.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = "PrivateSafe is Locked",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Protected with biometric authentication and local PIN passcode.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(28.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Surface(
+                            modifier = Modifier.size(96.dp),
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
+                        ) {
+                            Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+                                Icon(
+                                    imageVector = Icons.Default.Security,
+                                    contentDescription = "Security Shield",
+                                    modifier = Modifier.size(48.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
 
-                    if (canUseBiometrics && settings.privateSafePasscode.isNotEmpty()) {
-                        Button(
-                            onClick = { triggerBiometricUnlock() },
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .testTag("unlock_biometrics_button")
-                        ) {
-                            Icon(Icons.Default.Fingerprint, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Unlock with Biometrics")
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                        OutlinedButton(
-                            onClick = {
-                                isSetPasscodeMode = false
-                                showAuthDialog = true
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .testTag("unlock_pin_button")
-                        ) {
-                            Text("Unlock with PIN Passcode")
-                        }
-                    } else {
-                        Button(
-                            onClick = {
-                                isSetPasscodeMode = settings.privateSafePasscode.isEmpty()
-                                showAuthDialog = true
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.8f)
-                                .testTag("unlock_privatesafe_main_button")
-                        ) {
-                            Text(if (settings.privateSafePasscode.isEmpty()) "Set PrivateSafe Passcode" else "Unlock PrivateSafe")
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "PrivateSafe is Locked",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Protected with biometric authentication and local PIN passcode.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(28.dp))
+
+                        if (canUseBiometrics && settings.privateSafePasscode.isNotEmpty()) {
+                            Button(
+                                onClick = { triggerBiometricUnlock() },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .testTag("unlock_biometrics_button")
+                            ) {
+                                Icon(Icons.Default.Fingerprint, contentDescription = null)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("Unlock with Biometrics")
+                            }
+                            Spacer(modifier = Modifier.height(12.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    isSetPasscodeMode = false
+                                    showAuthDialog = true
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .testTag("unlock_pin_button")
+                            ) {
+                                Text("Unlock with PIN Passcode")
+                            }
+                        } else {
+                            Button(
+                                onClick = {
+                                    isSetPasscodeMode = settings.privateSafePasscode.isEmpty()
+                                    showAuthDialog = true
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(48.dp)
+                                    .testTag("unlock_privatesafe_main_button")
+                            ) {
+                                Text(if (settings.privateSafePasscode.isEmpty()) "Set PrivateSafe Passcode" else "Unlock PrivateSafe")
+                            }
                         }
                     }
                 }
             } else {
                 // Unlocked View
                 if (privateNotes.isEmpty()) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(0.9f),
+                        shape = RoundedCornerShape(24.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.5f),
+                        border = glassBorder,
+                        shadowElevation = 6.dp
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.LockOpen,
-                            contentDescription = null,
-                            modifier = Modifier.size(64.dp),
-                            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "PrivateSafe is Empty",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = "To move notes here, toggle 'Private' on any note card or in the editor.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(28.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.LockOpen,
+                                contentDescription = null,
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f)
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "PrivateSafe is Empty",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = "To move notes here, toggle 'Private' on any note card or in the editor.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 } else {
                     LazyVerticalGrid(
