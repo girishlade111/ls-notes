@@ -23,6 +23,7 @@ fun TrashScreen(
     viewModel: NotesViewModel,
     onOpenDrawer: () -> Unit
 ) {
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     val trashNotes by viewModel.trashNotes.collectAsState()
     var showEmptyConfirmDialog by remember { mutableStateOf(false) }
 
@@ -40,7 +41,10 @@ fun TrashScreen(
                 actions = {
                     if (trashNotes.isNotEmpty()) {
                         TextButton(
-                            onClick = { showEmptyConfirmDialog = true },
+                            onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                showEmptyConfirmDialog = true
+                            },
                             colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text("Empty Trash")
@@ -114,10 +118,16 @@ fun TrashScreen(
                                 }
 
                                 Row {
-                                    IconButton(onClick = { viewModel.restoreNoteFromTrash(note.id) }) {
+                                    IconButton(onClick = {
+                                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                                        viewModel.restoreNoteFromTrash(note.id)
+                                    }) {
                                         Icon(Icons.Default.RestoreFromTrash, contentDescription = "Restore", tint = MaterialTheme.colorScheme.primary)
                                     }
-                                    IconButton(onClick = { viewModel.deleteNotePermanently(note.id) }) {
+                                    IconButton(onClick = {
+                                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        viewModel.deleteNotePermanently(note.id)
+                                    }) {
                                         Icon(Icons.Default.DeleteForever, contentDescription = "Delete Forever", tint = MaterialTheme.colorScheme.error)
                                     }
                                 }
@@ -137,6 +147,7 @@ fun TrashScreen(
             confirmButton = {
                 Button(
                     onClick = {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                         viewModel.emptyTrash()
                         showEmptyConfirmDialog = false
                     },
