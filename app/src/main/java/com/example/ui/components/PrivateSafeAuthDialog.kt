@@ -22,6 +22,7 @@ fun PrivateSafeAuthDialog(
     onConfirm: (String) -> Unit,
     onDismiss: () -> Unit
 ) {
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     var passcode by remember { mutableStateOf("") }
     var confirmPasscode by remember { mutableStateOf("") }
     var errorText by remember { mutableStateOf("") }
@@ -45,7 +46,10 @@ fun PrivateSafeAuthDialog(
                 if (!isSetPasscodeMode && onBiometricClick != null) {
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedButton(
-                        onClick = onBiometricClick,
+                        onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                            onBiometricClick()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .testTag("biometric_auth_button")
@@ -110,13 +114,16 @@ fun PrivateSafeAuthDialog(
             Button(
                 onClick = {
                     if (passcode.isBlank()) {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                         errorText = "Passcode cannot be empty"
                         return@Button
                     }
                     if (isSetPasscodeMode && passcode != confirmPasscode) {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                         errorText = "Passcodes do not match"
                         return@Button
                     }
+                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                     onConfirm(passcode)
                 },
                 modifier = Modifier.testTag("private_safe_confirm_button")
