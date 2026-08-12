@@ -73,6 +73,7 @@ class NotesViewModel(application: Application) : AndroidViewModel(application) {
             val typeStr = intent.getStringExtra(PinnedNotesWidgetProvider.EXTRA_CREATE_NOTE_TYPE) ?: "TEXT"
             val noteType = when (typeStr) {
                 "CHECKLIST" -> NoteType.CHECKLIST
+                "PHOTO", "IMAGE", "CAMERA" -> NoteType.PHOTO
                 "VOICE", "AUDIO" -> NoteType.AUDIO
                 "DRAWING", "SKETCH" -> NoteType.SKETCH
                 else -> NoteType.TEXT
