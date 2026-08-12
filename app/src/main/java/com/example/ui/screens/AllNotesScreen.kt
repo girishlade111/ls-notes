@@ -43,6 +43,7 @@ fun AllNotesScreen(
     var showCreateFabMenu by remember { mutableStateOf(false) }
 
     Scaffold(
+        contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             Column(modifier = Modifier.fillMaxWidth().padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 4.dp)) {
                 // Global Search Bar

@@ -236,7 +236,8 @@ fun MainScreen(
             }
         ) {
             Scaffold(
-                snackbarHost = { SnackbarHost(snackbarHostState) }
+                snackbarHost = { SnackbarHost(snackbarHostState) },
+                contentWindowInsets = WindowInsets.statusBars
             ) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
                     when (currentSection) {
