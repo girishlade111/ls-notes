@@ -65,6 +65,35 @@
             android:textSize="11sp" />
     </LinearLayout>
 
+    <!-- Action 3: Photo Note -->
+    <LinearLayout
+        android:id="@+id/btn_quick_photo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:background="@drawable/widget_button_bg"
+            android:contentDescription="New Photo Note"
+            android:padding="5dp"
+            android:src="@drawable/ic_widget_photo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Photo"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp" />
+    </LinearLayout>
+
     <!-- Action 3: Voice Note -->
     <LinearLayout
         android:id="@+id/btn_quick_voice"
