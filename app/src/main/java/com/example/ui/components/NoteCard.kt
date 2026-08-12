@@ -87,8 +87,8 @@ fun NoteCard(
     val cardModifier = if (isListView) {
         Modifier
             .fillMaxWidth()
-            .heightIn(min = 130.dp, max = 150.dp)
-            .padding(horizontal = 6.dp, vertical = 5.dp)
+            .height(140.dp)
+            .padding(horizontal = 6.dp, vertical = 4.dp)
     } else {
         Modifier
             .fillMaxWidth()
