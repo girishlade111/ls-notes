@@ -40,6 +40,7 @@ fun AllNotesScreen(
     val tags by viewModel.allTags.collectAsState()
     val settings by viewModel.settings.collectAsState()
 
+    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
     var showCreateFabMenu by remember { mutableStateOf(false) }
 
     androidx.activity.compose.BackHandler(enabled = filterState.searchQuery.isNotEmpty()) {
@@ -91,43 +92,41 @@ fun AllNotesScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Folder & Tag Quick Filter Chips Row
-                ScrollableTabRow(
-                    selectedTabIndex = 0,
-                    edgePadding = 0.dp,
-                    divider = {},
-                    indicator = {}
+                // Notebook & Tag Filter Chips Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+                    // Notebook Selector Dropdown Chip
                     FilterChip(
-                        selected = filterState.selectedNotebookId == null && filterState.selectedTag == null,
-                        onClick = {
-                            viewModel.setNotebookFilter(null)
-                            viewModel.setTagFilter(null)
+                        selected = filterState.selectedNotebookId != null,
+                        onClick = { viewModel.setNotebookFilter(null) },
+                        label = {
+                            val activeName = notebooks.find { it.id == filterState.selectedNotebookId }?.name ?: "All Notebooks"
+                            Text(activeName)
                         },
-                        label = { Text("All") },
-                        modifier = Modifier.padding(end = 6.dp)
+                        trailingIcon = {
+                            if (filterState.selectedNotebookId != null) {
+                                Icon(Icons.Default.Close, contentDescription = "Clear Notebook Filter", modifier = Modifier.size(16.dp))
+                            }
+                        }
                     )
 
-                    notebooks.forEach { nb ->
+                    // Tag Selector Chip
+                    if (tags.isNotEmpty()) {
                         FilterChip(
-                            selected = filterState.selectedNotebookId == nb.id,
-                            onClick = {
-                                viewModel.setNotebookFilter(if (filterState.selectedNotebookId == nb.id) null else nb.id)
+                            selected = filterState.selectedTagId != null,
+                            onClick = { viewModel.setTagFilter(null) },
+                            label = {
+                                val activeTag = tags.find { it.id == filterState.selectedTagId }?.name ?: "All Tags"
+                                Text(activeTag)
                             },
-                            label = { Text(nb.name) },
-                            leadingIcon = { Icon(Icons.Default.Folder, contentDescription = null, modifier = Modifier.size(16.dp)) },
-                            modifier = Modifier.padding(end = 6.dp)
-                        )
-                    }
-
-                    tags.forEach { tag ->
-                        FilterChip(
-                            selected = filterState.selectedTag == tag.name,
-                            onClick = {
-                                viewModel.setTagFilter(if (filterState.selectedTag == tag.name) null else tag.name)
-                            },
-                            label = { Text("#${tag.name}") },
-                            modifier = Modifier.padding(end = 6.dp)
+                            trailingIcon = {
+                                if (filterState.selectedTagId != null) {
+                                    Icon(Icons.Default.Close, contentDescription = "Clear Tag Filter", modifier = Modifier.size(16.dp))
+                                }
+                            }
                         )
                     }
                 }
@@ -135,7 +134,11 @@ fun AllNotesScreen(
         },
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.End) {
-                AnimatedVisibility(visible = showCreateFabMenu) {
+                AnimatedVisibility(
+                    visible = showCreateFabMenu,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
                     Column(
                         horizontalAlignment = Alignment.End,
                         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -144,32 +147,47 @@ fun AllNotesScreen(
                         ExtendedFloatingActionButton(
                             text = { Text("Text Note") },
                             icon = { Icon(Icons.Default.Notes, contentDescription = null) },
-                            onClick = { showCreateFabMenu = false; onCreateNote(NoteType.TEXT) },
+                            onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                showCreateFabMenu = false; onCreateNote(NoteType.TEXT)
+                            },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                         ExtendedFloatingActionButton(
                             text = { Text("Checklist") },
                             icon = { Icon(Icons.Default.CheckBox, contentDescription = null) },
-                            onClick = { showCreateFabMenu = false; onCreateNote(NoteType.CHECKLIST) },
+                            onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                showCreateFabMenu = false; onCreateNote(NoteType.CHECKLIST)
+                            },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                         ExtendedFloatingActionButton(
                             text = { Text("Sketch / Drawing") },
                             icon = { Icon(Icons.Default.Brush, contentDescription = null) },
-                            onClick = { showCreateFabMenu = false; onCreateNote(NoteType.SKETCH) },
+                            onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                showCreateFabMenu = false; onCreateNote(NoteType.SKETCH)
+                            },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                         ExtendedFloatingActionButton(
                             text = { Text("Smart Card") },
                             icon = { Icon(Icons.Default.Bookmark, contentDescription = null) },
-                            onClick = { showCreateFabMenu = false; onCreateNote(NoteType.SMART_CARD) },
+                            onClick = {
+                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                showCreateFabMenu = false; onCreateNote(NoteType.SMART_CARD)
+                            },
                             containerColor = MaterialTheme.colorScheme.secondaryContainer
                         )
                     }
                 }
 
                 FloatingActionButton(
-                    onClick = { showCreateFabMenu = !showCreateFabMenu },
+                    onClick = {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                        showCreateFabMenu = !showCreateFabMenu
+                    },
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(
