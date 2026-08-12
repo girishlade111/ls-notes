@@ -394,7 +394,10 @@ fun NoteHistoryScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
 
                                         Button(
-                                            onClick = { selectedHistoryForRestore = history },
+                                            onClick = {
+                                                haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                                                selectedHistoryForRestore = history
+                                            },
                                             modifier = Modifier.height(36.dp),
                                             contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp)
                                         ) {
@@ -458,6 +461,7 @@ fun NoteHistoryScreen(
             confirmButton = {
                 Button(
                     onClick = {
+                        haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                         viewModel.revertNoteToHistory(noteId, historyToRestore.id) { restoredNote ->
                             selectedHistoryForRestore = null
                             onVersionRestored(restoredNote)
