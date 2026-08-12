@@ -160,25 +160,32 @@ fun ExportBottomSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Format Selection
+            // Format Selection (PDF, TXT, JSON)
             Text("Select File Format", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 FilterChip(
                     selected = exportFormat == "TXT",
                     onClick = { exportFormat = "TXT" },
-                    label = { Text("Plain Text (.txt)") },
-                    leadingIcon = { Icon(Icons.Default.Description, contentDescription = null) },
+                    label = { Text("TXT") },
+                    leadingIcon = { Icon(Icons.Default.Description, contentDescription = null, modifier = Modifier.size(16.dp)) },
                     modifier = Modifier.weight(1f)
                 )
                 FilterChip(
                     selected = exportFormat == "PDF",
                     onClick = { exportFormat = "PDF" },
-                    label = { Text("PDF Document (.pdf)") },
-                    leadingIcon = { Icon(Icons.Default.PictureAsPdf, contentDescription = null) },
+                    label = { Text("PDF") },
+                    leadingIcon = { Icon(Icons.Default.PictureAsPdf, contentDescription = null, modifier = Modifier.size(16.dp)) },
+                    modifier = Modifier.weight(1f)
+                )
+                FilterChip(
+                    selected = exportFormat == "JSON",
+                    onClick = { exportFormat = "JSON" },
+                    label = { Text("JSON") },
+                    leadingIcon = { Icon(Icons.Default.Code, contentDescription = null, modifier = Modifier.size(16.dp)) },
                     modifier = Modifier.weight(1f)
                 )
             }
