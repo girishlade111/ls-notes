@@ -48,20 +48,11 @@ class MainActivity : FragmentActivity() {
             }
 
             LsNotesTheme(themeMode = settings.themeMode) {
-                Scaffold(
+                Surface(
                     modifier = Modifier.fillMaxSize(),
-                    contentWindowInsets = WindowInsets.systemBars
-                ) { innerPadding ->
-                    Surface(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding)
-                            .navigationBarsPadding()
-                            .imePadding(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        MainScreen(viewModel = notesViewModel)
-                    }
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MainScreen(viewModel = notesViewModel)
                 }
             }
         }
