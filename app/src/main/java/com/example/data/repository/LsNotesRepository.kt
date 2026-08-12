@@ -5,7 +5,6 @@ import androidx.room.withTransaction
 import com.example.data.local.*
 import com.example.data.model.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class LsNotesRepository(
