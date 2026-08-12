@@ -141,8 +141,12 @@ fun NoteCard(
                         Spacer(modifier = Modifier.width(4.dp))
                     }
 
+                    val haptic = androidx.compose.ui.platform.LocalHapticFeedback.current
                     IconButton(
-                        onClick = onPinToggle,
+                        onClick = {
+                            haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                            onPinToggle()
+                        },
                         modifier = Modifier.size(28.dp)
                     ) {
                         Icon(
@@ -177,7 +181,11 @@ fun NoteCard(
                             )
                             DropdownMenuItem(
                                 text = { Text(if (note.isPinned) "Unpin Note" else "Pin Note") },
-                                onClick = { showMenu = false; onPinToggle() },
+                                onClick = {
+                                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                                    showMenu = false
+                                    onPinToggle()
+                                },
                                 leadingIcon = { Icon(Icons.Default.PushPin, contentDescription = null) }
                             )
                             DropdownMenuItem(
@@ -192,7 +200,11 @@ fun NoteCard(
                             )
                             DropdownMenuItem(
                                 text = { Text(if (note.isPrivate) "Remove from PrivateSafe" else "Move to PrivateSafe") },
-                                onClick = { showMenu = false; onTogglePrivate() },
+                                onClick = {
+                                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    showMenu = false
+                                    onTogglePrivate()
+                                },
                                 leadingIcon = { Icon(Icons.Default.Security, contentDescription = null) }
                             )
                             DropdownMenuItem(
@@ -227,7 +239,11 @@ fun NoteCard(
                             HorizontalDivider()
                             DropdownMenuItem(
                                 text = { Text("Move to Trash", color = MaterialTheme.colorScheme.error) },
-                                onClick = { showMenu = false; onDelete() },
+                                onClick = {
+                                    haptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    showMenu = false
+                                    onDelete()
+                                },
                                 leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null, tint = MaterialTheme.colorScheme.error) }
                             )
                         }
