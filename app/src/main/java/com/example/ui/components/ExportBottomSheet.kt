@@ -44,7 +44,7 @@ fun ExportBottomSheet(
     val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    // Export format: "TXT" or "PDF"
+    // Export format: "TXT", "PDF", or "JSON"
     var exportFormat by remember { mutableStateOf("TXT") }
     
     // Scope option: 0 -> Single Note, 1 -> Selected Notes
@@ -75,12 +75,20 @@ fun ExportBottomSheet(
     
     val dateFormatter = remember { SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()) }
     val suggestedFileName = remember(defaultTitle, exportFormat) {
-        val ext = if (exportFormat == "PDF") ".pdf" else ".txt"
+        val ext = when (exportFormat) {
+            "PDF" -> ".pdf"
+            "JSON" -> ".json"
+            else -> ".txt"
+        }
         "${defaultTitle}_${dateFormatter.format(Date())}$ext"
     }
 
-    // Document file creation launcher using ActivityResultContracts.CreateDocument
-    val mimeType = if (exportFormat == "PDF") "application/pdf" else "text/plain"
+    // Document file creation launcher using Storage Access Framework (ActivityResultContracts.CreateDocument)
+    val mimeType = when (exportFormat) {
+        "PDF" -> "application/pdf"
+        "JSON" -> "application/json"
+        else -> "text/plain"
+    }
     val createDocumentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument(mimeType)
     ) { uri: Uri? ->
@@ -89,7 +97,7 @@ fun ExportBottomSheet(
                 context = context,
                 uri = uri,
                 notes = activeNotesToExport,
-                isPdf = exportFormat == "PDF",
+                exportFormat = exportFormat,
                 includeHeader = includeHeader,
                 includeMetadata = includeMetadata
             )
