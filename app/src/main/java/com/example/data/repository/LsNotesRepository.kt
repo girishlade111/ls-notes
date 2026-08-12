@@ -333,17 +333,6 @@ class LsNotesRepository(
 
     suspend fun seedInitialDataIfEmpty() {
         noteDao.deleteDemoNotes()
-
-        val notebooks = allNotebooks.first()
-        if (notebooks.isEmpty()) {
-            notebookDao.insertNotebook(Notebook(name = "Work & Strategy", colorHex = "#7C4DFF"))
-            notebookDao.insertNotebook(Notebook(name = "Personal Journal", colorHex = "#FF5722"))
-            notebookDao.insertNotebook(Notebook(name = "LS Notes Ideas", colorHex = "#00B0FF"))
-
-            tagDao.insertTag(Tag(name = "Important", colorHex = "#E91E63"))
-            tagDao.insertTag(Tag(name = "Ideas", colorHex = "#00C853"))
-            tagDao.insertTag(Tag(name = "Checklist", colorHex = "#FF9800"))
-            tagDao.insertTag(Tag(name = "Personal", colorHex = "#9C27B0"))
-        }
+        notebookDao.deleteDemoNotebooks()
     }
 }

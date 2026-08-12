@@ -29,6 +29,9 @@ interface NotebookDao {
 
     @Query("DELETE FROM notebooks WHERE id = :id")
     suspend fun deleteNotebookById(id: Long)
+
+    @Query("DELETE FROM notebooks WHERE name IN ('Work & Strategy', 'Personal Journal', 'LS Notes Ideas')")
+    suspend fun deleteDemoNotebooks()
 }
 
 typealias FolderDao = NotebookDao
