@@ -607,3 +607,7 @@ Ideas already scaffolded in the codebase (commented-out dependencies):
 This project is provided for evaluation/development purposes. Ensure you own
 or have rights to all assets before distributing. *(Add your chosen license
 here, e.g. MIT, before public release.)*
+
+---
+
+Built by **Girish Lade** — [ladestack.in](https://ladestack.in)
